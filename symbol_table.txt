@@ -1,0 +1,7 @@
+ID        TYPE        ADDRESS
+calculateFib			INT			0
+n			INT			4
+c			INT			8
+calculateFib			INT			12
+n			INT			16
+c			INT			20

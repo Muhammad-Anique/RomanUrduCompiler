@@ -1,0 +1,5 @@
+First we created a single DFA for Identifiers, integers, string, comment, realtional operators and IO operators. Then we moved one and wrote the regular definition of these by consulting 
+the DFA. Lastly we did the coding part by writing a program that identifies token and their respevctive lexenes for keywords, relational operators, special characters, arithmetic operators,
+other constructs, strings, comments, assignment operator, starting block, closing block and IO operators. We followed both the DFA (i.e it's states represent cases) and regular defintion 
+(i.e for token names) while coding for dentifiers, integers, string, comment, realtional operators and IO operators while the others were did so independently. We did not encounter any 
+problems whiile doing the assignment and were able to complete it without any hassle.
