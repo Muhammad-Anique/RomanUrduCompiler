@@ -149,8 +149,9 @@ void lexer::Tokenize()//function that tokenizes your input stream
 
                 toks.push_back(stream[i]);
                 state=6;
+                i++;
                 //printVec(toks);
-                tokens.push_back(token(string(""), TokenType::SEMICOLON));
+                tokens.push_back(token(string(""), TokenType::NL));
                 toks.clear();
 
             }
@@ -158,6 +159,8 @@ void lexer::Tokenize()//function that tokenizes your input stream
             //FOR TOKEN (SEMICOLON) --> ;
             else if(char(stream[i])==';' && stream[i+1]!='\n')
             {
+
+                
                 toks.push_back(stream[i]);
                 state=9;
                 //printVec(toks);
@@ -273,10 +276,10 @@ void lexer::Tokenize()//function that tokenizes your input stream
             //FOR TOKEN (SC) --> [ ) ] : RPAREN
             else if(char(stream[i])=='\n')
             {
-                toks.push_back(stream[i]);
-                state=6;
+                //toks.push_back(stream[i]);
+                state=10;
                 //printVec(toks);
-                tokens.push_back(token(string(""), TokenType::NL));
+                //tokens.push_back(token(string(""), TokenType::NL));
                 toks.clear();
             }
 
@@ -546,9 +549,27 @@ void lexer::Tokenize()//function that tokenizes your input stream
             else if(stream[i]=='\n')
             {
                 string stri(toks.begin(),toks.end());
-                tokens.push_back(token(string(stri), TokenType::COMMENT));
+                tokens.push_back(token(string(" "), TokenType::NL));
                 toks.clear();
                 state = 6;
+            }
+            break;
+
+
+            case 10:
+            if(stream[i]=='\n')
+            {
+                state=10;
+            }
+            else if(stream[i]!='\n')
+            {
+                //string stri(toks.begin(),toks.end());
+                // cout<<"Them = ";
+                // tokens.back().Print();
+                if(tokens.back().tokenType!=TokenType::NL)
+                tokens.push_back(token(string(""), TokenType::NL));
+                toks.clear();
+                state = 3;
             }
             break;
 

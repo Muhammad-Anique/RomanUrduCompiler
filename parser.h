@@ -37,12 +37,14 @@ public:
 /////////////////////////////////////////////
 /////////////////////////////////////////////
 
-    void countStatementsInBlock(int pos, int btype);
+    int countLines(){ return _lexer.lineCount(_lexer.getCurrentPointer());}
+    int countStatementsInBlock(int pos, int btype);
     void countDecleration();
     void Program();
     void DeclarationList();
     void Declaration();
     void VariableDeclaration();
+    void VariableAssignment();
     void FunctionDeclaration();
     void VDSpecifier();
     void TypeF();
@@ -54,6 +56,18 @@ public:
     void StatementList();
     void Statement();
     token removeNL();
+
+
+    //Statement → Expression | SelectionStatement |  IterativeStatement |  ReturnStatement | VariableDeclaration | FunctionCall | IOStatement | ^
+    void Expression();
+    void SelectionStatement();
+    void IterativeStatement();
+    void ReturnStatement();
+    void FunctionCall();
+    void IOStatement();
+
+
+   
 
 
 //////////////////////////////////////////////

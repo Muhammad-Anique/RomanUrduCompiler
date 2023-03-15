@@ -2,7 +2,7 @@
 
 void parser::syntax_error()
 {
-    cout << "SYNTAX ERROR\n";
+    cout << "SYNTAX ERROR AT LINE  " << countLines() <<endl;;
     exit(1);
 }
 
@@ -30,14 +30,13 @@ void parser::print_tabs(){
 token parser::expect(TokenType expected_type)
 {
     token t = _lexer.getNextToken();
-    if(t.tokenType == TokenType::NL)
-    token t = _lexer.getNextToken();
-
     print_tabs();
     t.Print();  
 
-    if (t.tokenType != expected_type)
+    if (t.tokenType != expected_type){
+       // cout<<"Mismatched Token  = ";t.Print();
         syntax_error();
+    }
     else {
 
         if(t.tokenType==TokenType::ID){
@@ -222,9 +221,10 @@ void parser::resetPointer()
 
 
 
- void parser::countStatementsInBlock(int pos, int btype){
-    cout<<"idmeodi = "<< _lexer.getStatementCount(pos,btype);
-    statementCount = _lexer.getStatementCount(pos,btype);
+int  parser::countStatementsInBlock(int pos, int btype){
+    //cout<<"Pos = "<<pos<<endl;
+    //cout<<"idmeodi = "<< _lexer.getStatementCount(pos,btype);
+    return _lexer.getStatementCount(pos,btype);
 
  }
 
@@ -243,7 +243,7 @@ void parser::resetPointer()
 ///////////////////////////////////////////////////
 
 void parser::Program(){
-
+    //removeNL();
     print_tabs();
     resetPointer();
     countDecleration();
@@ -255,12 +255,16 @@ void parser::Program(){
     {
        DeclarationList();
     }
+    else{
+        syntax_error();
+    }
     tabs--;
+    //removeNL();
 
 }
 
 void parser::DeclarationList(){
-
+    //removeNL();
     // cout<<"functionCOunt = "<<functionCount<<endl;
     if(functionCount==1){
     Declaration();
@@ -268,13 +272,17 @@ void parser::DeclarationList(){
     else if(functionCount>1) {
      Declaration();DeclarationList(); 
     }
+    else{
+        ;
+    }
+    //removeNL();
 }
 
 
 
 
 void parser::Declaration(){
-    removeNL();
+    //removeNL();
     print_tabs();
     cout<<"D"<<endl;
     tabs++;
@@ -287,10 +295,14 @@ void parser::Declaration(){
       
         VariableDeclaration();
     }
+    else
+    {
+        syntax_error();
+    }
 
     tabs--;
     functionCount--;
-    removeNL();
+   // removeNL();
    
 }
 
@@ -298,7 +310,7 @@ void parser::Declaration(){
 
 
 void parser::TypeF(){
-    removeNL();
+   // removeNL();
     print_tabs();
     cout<<"TypeF"<<endl;
     tabs++;
@@ -310,9 +322,12 @@ void parser::TypeF(){
     else if(_lexer.peek(1).tokenType == TokenType::KHALI){
        expect(TokenType::ADAD); 
     }
+    else{
+        syntax_error();
+    }
 
     tabs--;
-    removeNL();
+   // removeNL();
 
 }
 
@@ -320,7 +335,7 @@ void parser::TypeF(){
 
 
 void parser::TypeID(){
-
+    removeNL();
     print_tabs();
     cout<<"TypeID"<<endl;
     tabs++;
@@ -329,15 +344,18 @@ void parser::TypeID(){
     {
        expect(TokenType::ADAD); 
     }
+    else{
+        syntax_error();
+    }
 
     tabs--;
-
+    //removeNL();
 }
 
 
 void parser::Parameter(){
     //Parameter → id @ typeV
-    removeNL();
+    //removeNL();
     print_tabs();
     cout<<"P"<<endl;
     tabs++;
@@ -348,10 +366,12 @@ void parser::Parameter(){
         expect(TokenType::AT);
         TypeID();
           
+    }else{
+        syntax_error();
     }
 
     tabs--;
-    removeNL();
+  // removeNL();
 
 
 }
@@ -360,7 +380,7 @@ void parser::Parameter(){
 
 
 void parser::ParameterList(){
-    removeNL();
+  /// removeNL();
     //ParameterList → Parameter | Parameter `|`  ParameterList 
     print_tabs();
     cout<<"PL"<<endl;
@@ -375,14 +395,18 @@ void parser::ParameterList(){
         expect(TokenType::PIPE);
         ParameterList();
     }
+    else
+    {
+        syntax_error();
+    }
 
     tabs--;
-    removeNL();
+  /// removeNL();
 
 }
 
 void parser::FunctionDeclaration(){
-    removeNL();
+   ///removeNL();
     //FunctionDeclaration → “kaam” id “@” typeF "(" ParameterList ")" BlockF
 
     print_tabs();
@@ -399,11 +423,14 @@ void parser::FunctionDeclaration(){
        ParameterList();
        expect(TokenType::RPAREN);
        BlockF();
-
+    }
+    else{
+        syntax_error();
     }
 
+
     tabs--;
-    removeNL();
+    //removeNL();
 
 
 }
@@ -412,7 +439,7 @@ void parser::FunctionDeclaration(){
 
 
 void parser::VariableDeclaration(){
-    removeNL();
+   //removeNL();
     print_tabs();
     cout<<"VD"<<endl;
     tabs++;
@@ -425,13 +452,36 @@ void parser::VariableDeclaration(){
        TypeID(); 
        VDSpecifier();
     }
+    else{
+        ;
+    }
 
     tabs--;
-    removeNL();
+  // removeNL();
+}
+
+
+void parser::VariableAssignment(){
+    print_tabs();
+    cout<<"VA"<<endl;
+    tabs++;
+ 
+    if (_lexer.peek(1).tokenType == TokenType::RAKHO)
+    {
+       expect(TokenType::RAKHO);
+       expect(TokenType::ID);
+       expect(TokenType::ASSIGNOP);
+       Expression();
+    }
+    else{
+        ;
+    }
+
+    tabs--;
 }
 
 void parser::VDSpecifier(){
-     removeNL();
+    //removeNL();
     print_tabs();
     cout<<"VD_S"<<endl;
     tabs++;
@@ -439,17 +489,23 @@ void parser::VDSpecifier(){
     if (_lexer.peek(1).tokenType == TokenType::ASSIGNOP)
     {
        expect(TokenType::ASSIGNOP);
-        F();T_();
+       Expression();
+    }
+    else if(_lexer.peek(1).tokenType == TokenType::NL) {
+         expect(TokenType::NL);
+    }
+    else{
+        ;
     }
 
     tabs--;
-    removeNL();
+   //removeNL();
 
 }
 
 
 void parser::Block(){
-    removeNL();
+    //removeNL();
     print_tabs();
     cout<<"BLOCK"<<endl;
     tabs++;
@@ -457,17 +513,20 @@ void parser::Block(){
     if (_lexer.peek(1).tokenType == TokenType::KARO)
     {
        expect(TokenType::KARO);
+       expect(TokenType::NL);
        StatementList();
        expect(TokenType::BAS); 
        expect(TokenType::KARO);
+       expect(TokenType::NL);
     }
 
     tabs--;
-    removeNL();
+    //removeNL();
 
 }
 void parser::BlockF(){
-    removeNL();
+    //removeNL();
+    int Statement =0;
     print_tabs();
     cout<<"BLOCKF"<<endl;
     tabs++;
@@ -475,14 +534,17 @@ void parser::BlockF(){
     if (_lexer.peek(1).tokenType == TokenType::KARO)
     {
        expect(TokenType::KARO);
-       countStatementsInBlock(_lexer.getCurrentPointer()-1,1);
+       expect(TokenType::NL);
+       //cout<<"StatementC = "<<statementCount<<endl;
        StatementList();
+       //cout<<"this = ";_lexer.peek(1).Print();
        expect(TokenType::KAAM); 
        expect(TokenType::KHATAM);
+       expect(TokenType::NL);
     }
 
     tabs--;
-    removeNL();
+   // removeNL();
 
 }
 
@@ -490,60 +552,166 @@ void parser::BlockF(){
 
 
 void parser::StatementList(){
-    removeNL();
+  // removeNL();
     print_tabs();
     cout<<"SL"<<endl;
     tabs++;
-    cout<<"StatementCount = "<<statementCount<<endl;
+    // cout<<"StatementCount = "<<countStatementsInBlock(_lexer.getCurrentPointer()-1,1)<<endl;
+    // cout<<"Here";
+    // _lexer.peek(1).Print();
 
-    if(statementCount==1){
+    // if(countStatementsInBlock(_lexer.getCurrentPointer()-1,1)==1){
+    //    // cout<<"h"<<endl;
+    // Statement();
+    // }
+    // else if(countStatementsInBlock(_lexer.getCurrentPointer()-1,1)>1) {
+    //    // cout<<"b";
+    //  Statement();StatementList();
+    // }
+    // else{
+    //     cout<<"j";
+    //     return;
+    // }
+
+    //cout<<"Call "<<_lexer.CheckLast(_lexer.getCurrentPointer())<<endl;
+
+    if(_lexer.CheckLast(_lexer.getCurrentPointer())==1){
     Statement();
     }
-    else if(statementCount>1) {
+    else if(_lexer.CheckLast(_lexer.getCurrentPointer())==0) {
      Statement();StatementList();
+    }
+    else if(_lexer.CheckLast(_lexer.getCurrentPointer())==-1) {
+     return;
+    }
+    else{
+        return;
     }
 
     tabs--;
-    removeNL();
+   //removeNL();
    
 }
 
 void parser::Statement(){
-    removeNL();
+    //removeNL();
     print_tabs();
     cout<<"S"<<endl;
     tabs++;
 
 
-     F();T_(); 
-     
+    if (_lexer.peek(1).tokenType == TokenType::AGAR)
+    {
+        SelectionStatement();
+    }
+    else if (_lexer.peek(1).tokenType == TokenType::JAB){
+        IterativeStatement();
+    }
+    else if (_lexer.peek(1).tokenType == TokenType::WAPAS){
+        ReturnStatement();
+    }
+    else if (_lexer.peek(1).tokenType == TokenType::RAKHO && _lexer.peek(3).tokenType == TokenType::AT){
+        VariableDeclaration();
+    }
+    else if (_lexer.peek(1).tokenType == TokenType::RAKHO && _lexer.peek(3).tokenType == TokenType::ASSIGNOP){
+        VariableAssignment();
+    }
+    else if (_lexer.peek(1).tokenType == TokenType::CHALAO){
+        FunctionCall();
+    }
+    else if (_lexer.peek(1).tokenType == TokenType::LO  || _lexer.peek(1).tokenType == TokenType::DEKHAO){
+        IOStatement();
+    }
+    else if (_lexer.peek(1).tokenType == TokenType::ID || _lexer.peek(1).tokenType == TokenType::INT){
+        Expression();
+    }
+    else{
+        syntax_error();
+    }
+   
     tabs--;
-    statementCount--;
-    removeNL();
+    //statementCount--;
+   // removeNL();
+
+}
+
+
+void parser::Expression(){
+
+     //removeNL();
+    print_tabs();
+    cout<<"Ex"<<endl;
+    tabs++;
+
+     F(); T_();  
+     if (_lexer.peek(1).tokenType != TokenType::RPAREN ){
+        expect(TokenType::NL);
+     }
+    
+
+    tabs--;
+     
+}
+void parser::SelectionStatement(){
+
+}
+void parser::IterativeStatement(){
+    //IterativeStatement → "jab tak" "(" Expression ")" Block
+    print_tabs();
+    cout<<"Iter S"<<endl;
+    tabs++;
+   
+    if (_lexer.peek(1).tokenType == TokenType::JAB)
+    {
+       expect(TokenType::JAB);
+       expect(TokenType::TAK);
+       expect(TokenType::LPAREN); 
+       Expression();
+       expect(TokenType::RPAREN);
+       Block();
+    }
+    else {
+      
+    }
+
+    tabs--;
+
+
+}
+void parser::ReturnStatement(){
+
+}
+void parser::FunctionCall(){
+
+}
+void parser::IOStatement(){
 
 }
 
 
 
+
+
+
 void parser::T_(){
-    removeNL();
+   // removeNL();
     print_tabs();
     cout<<"T_"<<endl;
     tabs++;
 
     if (_lexer.peek(1).tokenType == TokenType::PLUS)
     {
-        expect(TokenType::PLUS); F(); T_(); 
+        expect(TokenType::PLUS); F(); T_();
     }
     else{
      ;
     }
     tabs--;
-    removeNL();
+   // removeNL();
 }
 
 void parser::F(){
-    removeNL();
+   // removeNL();
     print_tabs();
     cout<<"F"<<endl;
     tabs++;
@@ -554,13 +722,14 @@ void parser::F(){
     }
     else if(_lexer.peek(1).tokenType == TokenType::INT)
     {
-     expect(TokenType::INT);   
+        expect(TokenType::INT);   
     }
     else{
        ;
     }
     tabs--;
-    removeNL();
+    //removeNL();
+
 }
 
 

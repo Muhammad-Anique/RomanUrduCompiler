@@ -33,7 +33,6 @@ enum class TokenType
 	MODOLUS=19,
 
 
-
 	STRING =20,
 
 	
@@ -92,33 +91,79 @@ public:
 	int getCurrentPointer();//get where current pointer in tokens vector is
 	void setCurrentPointer(int pos);//move current pointer to wherever
 	token peek(int);//peek the next token
+	int lineCount(int pos){
+		int lines =0;
+		for(int i=pos;i>=0;i--){
+			if(tokens[i].tokenType==TokenType::NL)
+			lines++;
+		}
+		return lines;	
+
+	}
+
 	int getDecCount(){
 		int count =0;
 		for(int i=0;i<tokens.size()-1;i++){
 			if(tokens[i].tokenType==TokenType::KAAM && tokens[i+1].tokenType!=TokenType::KHATAM)
 			count++;
 		}
+		//cout<<"Dec count = "<<count<<endl;
 		return count;	
 	}
 
-	int getStatementCount(int pos, int bType){
+	int CheckLast(int pos){
+		//cout<<"AYA = "; tokens[pos].Print();
 
+	    if( tokens[pos].tokenType==TokenType::KAAM  && tokens[pos+1].tokenType==TokenType::KHATAM){
+		//cout<<"kaam  khtm khtm";
+		return -1;}
+		else if( tokens[pos].tokenType==TokenType::BAS && tokens[pos+1].tokenType==TokenType::KARO && tokens[pos+3].tokenType==TokenType::BAS ){
+		//cout<<"bas kro khtm";
+		return -1;}
+		
+		while(tokens[pos].tokenType!=TokenType::NL)
+		pos++;
+
+
+		if(tokens[pos].tokenType==TokenType::NL && (tokens[pos+1].tokenType==TokenType::BAS  && tokens[pos+2].tokenType==TokenType::KARO)){
+		//cout<<"bas k";
+		return 1;}
+		else if(tokens[pos].tokenType==TokenType::NL && (tokens[pos+1].tokenType==TokenType::KAAM  && tokens[pos+2].tokenType==TokenType::KHATAM)){
+		//cout<<"kaam khtm";
+		return 1;}
+	
+
+		else{
+			return 0;
+		}
+	}
+
+	int getStatementCount(int pos, int bType){
 		int count =0;
 		//karo..........bas karo
 		//cout<<"In getStatementCount"<<endl;
-		//tokens[pos].Print();
-		if(tokens[pos].tokenType==TokenType::KARO)
-		for(int i=pos+2;i<tokens.size()-1;i++){
 
-		//	tokens[i].Print();
+		cout<<"Pre";tokens[pos-1].Print();
+		cout<<"This";tokens[pos].Print();
+		cout<<"Next";tokens[pos+1].Print();
+		//if(tokens[pos].tokenType==TokenType::NL)
+		for(int i=pos+1;i<tokens.size()-1;i++){
+
+		    //cout<<"InLoop";tokens[i].Print();
 			if(tokens[i].tokenType==TokenType::BAS && tokens[i+1].tokenType==TokenType::KARO){
 				return count;
+			}
 
-			}else if(tokens[i].tokenType==TokenType::KAAM && tokens[i+1].tokenType==TokenType::KHATAM)
+			else if(tokens[i].tokenType==TokenType::KAAM && tokens[i+1].tokenType==TokenType::KHATAM)
 			{
 				return count;
+			}
+
+			else if((tokens[i].tokenType!=TokenType::BAS  && tokens[i].tokenType!=TokenType::KAAM) && tokens[i+1].tokenType==TokenType::KARO){
+				return count + 1;
 
 			}
+			
 			else if(tokens[i].tokenType==TokenType::NL){
 			count++;
 			}
@@ -130,6 +175,7 @@ public:
 
 
 	}
+
 
 
 };

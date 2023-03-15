@@ -1,16 +1,16 @@
 kaam calculateFib@adad (n@adad | c@adad) karo
-2+4
-3+9
-7+8
-6+0
-4+8
-kaam khatam
+rakho x@adad := 0;
+	rakho y@adad := 0;
+	rakho z@adad;
+    jab tak (4 + 5) karo
+			rakho y := 5;
+			rakho i := 6 + 1;
+	bas karo
+    jab tak (4 + 5) karo
+			rakho y := 5;
+			rakho i := 6 + 1;
+	bas karo
+  
 
-kaam calculateFib@adad (n@adad | c@adad) karo
-2+4
-3+9
-7+8
-6+0
-4+8
 kaam khatam
 

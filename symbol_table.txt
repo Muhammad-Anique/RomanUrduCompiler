@@ -2,6 +2,10 @@ ID        TYPE        ADDRESS
 calculateFib			INT			0
 n			INT			4
 c			INT			8
-calculateFib			INT			12
-n			INT			16
-c			INT			20
+x			INT			12
+y			INT			16
+z			INT			20
+y			INT			24
+i			INT			28
+y			INT			32
+i			INT			36
