@@ -1,1 +1,0 @@
-rakho x@adad := 0

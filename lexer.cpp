@@ -45,7 +45,9 @@ string reserved[] = {
 	"adad",
 	"khali",
 	"khatam",
-    "wapas"
+    "wapas",
+    "error",
+    "temp"
 	};
 
 
@@ -72,6 +74,12 @@ void token::Print()
 {
     cout << "{" << lexeme << " , "
         << reserved[(int)tokenType] << "}\n";
+}
+
+
+void token::PrintOnlyToken()
+{
+    cout << reserved[(int)tokenType]<<"\n";
 }
 
 
@@ -131,6 +139,7 @@ void lexer::Tokenize()//function that tokenizes your input stream
                 state = 2;
                 toks.push_back(stream[i]);
                 
+                
             }
 
 
@@ -143,21 +152,21 @@ void lexer::Tokenize()//function that tokenizes your input stream
 
 
 
+            // //FOR TOKEN (SEMICOLON) --> ;
+            // else if(char(stream[i])==';' && stream[i+1]=='\n')
+            // {
+
+            //     toks.push_back(stream[i]);
+            //     state=6;
+            //     i++;
+            //     tokens.push_back(token(string(""), TokenType::NL));
+            //     nooflines.push_back(1);
+            //     toks.clear();
+
+            // }
+
             //FOR TOKEN (SEMICOLON) --> ;
-            else if(char(stream[i])==';' && stream[i+1]=='\n')
-            {
-
-                toks.push_back(stream[i]);
-                state=6;
-                i++;
-                //printVec(toks);
-                tokens.push_back(token(string(""), TokenType::NL));
-                toks.clear();
-
-            }
-
-            //FOR TOKEN (SEMICOLON) --> ;
-            else if(char(stream[i])==';' && stream[i+1]!='\n')
+            else if(char(stream[i])==';' )
             {
 
                 
@@ -193,7 +202,8 @@ void lexer::Tokenize()//function that tokenizes your input stream
                 toks.push_back(stream[i]);
                 state=6;
                 //printVec(toks);
-                tokens.push_back(token(string("EQ"), TokenType::RELOP));
+                tokens.push_back(token(string("="), TokenType::RELOP));
+                nooflines.push_back(2);
                 toks.clear();
             }
 
@@ -205,6 +215,17 @@ void lexer::Tokenize()//function that tokenizes your input stream
                 state=6;
                 //printVec(toks);
                 tokens.push_back(token(string(""), TokenType::PLUS));
+                nooflines.push_back(2);
+                toks.clear();
+            }
+
+            else if(char(stream[i])=='-')
+            {
+                toks.push_back(stream[i]);
+                state=6;
+                //printVec(toks);
+                tokens.push_back(token(string(""), TokenType::MINUS));
+                nooflines.push_back(2);
                 toks.clear();
             }
 
@@ -216,6 +237,7 @@ void lexer::Tokenize()//function that tokenizes your input stream
                 state=6;
                 //printVec(toks);
                 tokens.push_back(token(string(""), TokenType::MULTIPLY));
+                nooflines.push_back(2);
                 toks.clear();
             }
 
@@ -226,6 +248,7 @@ void lexer::Tokenize()//function that tokenizes your input stream
                 state=6;
                 //printVec(toks);
                 tokens.push_back(token(string(""), TokenType::DIVIDE));
+                nooflines.push_back(2);
                 toks.clear();
             }
 
@@ -238,6 +261,7 @@ void lexer::Tokenize()//function that tokenizes your input stream
                 state=6;
                 //printVec(toks);
                 tokens.push_back(token(string(""), TokenType::MODOLUS));
+                nooflines.push_back(2);
                 toks.clear();
             }
 
@@ -249,6 +273,7 @@ void lexer::Tokenize()//function that tokenizes your input stream
                 state=6;
                 //printVec(toks);
                 tokens.push_back(token(string(""), TokenType::PIPE));
+                nooflines.push_back(2);
                 toks.clear();
             }
 
@@ -259,6 +284,7 @@ void lexer::Tokenize()//function that tokenizes your input stream
                 state=6;
                 //printVec(toks);
                 tokens.push_back(token(string(""), TokenType::LPAREN));
+                nooflines.push_back(2);
                 toks.clear();
             }
 
@@ -269,6 +295,7 @@ void lexer::Tokenize()//function that tokenizes your input stream
                 state=6;
                 //printVec(toks);
                 tokens.push_back(token(string(""), TokenType::RPAREN));
+                nooflines.push_back(2);
                 toks.clear();
             }
 
@@ -279,7 +306,7 @@ void lexer::Tokenize()//function that tokenizes your input stream
                 //toks.push_back(stream[i]);
                 state=10;
                 //printVec(toks);
-                //tokens.push_back(token(string(""), TokenType::NL));
+                tokens.push_back(token(string(""), TokenType::NL));
                 toks.clear();
             }
 
@@ -292,6 +319,7 @@ void lexer::Tokenize()//function that tokenizes your input stream
                 state=6;
                 //printVec(toks);
                 tokens.push_back(token(string(""), TokenType::AT));
+                nooflines.push_back(2);
                 toks.clear();
             }
 
@@ -306,6 +334,7 @@ void lexer::Tokenize()//function that tokenizes your input stream
                 state=6;
                 //printVec(toks);
                 tokens.push_back(token(string(""), TokenType::ASSIGNOP));
+                nooflines.push_back(2);
                 toks.clear();
             }
 
@@ -336,6 +365,7 @@ void lexer::Tokenize()//function that tokenizes your input stream
                 //printVec(toks);
                 string str(toks.begin(),toks.end());
                 tokens.push_back(token(string(str), TokenType::INT));
+                nooflines.push_back(2);
                 toks.clear();
                 state = 3;
             }    
@@ -355,85 +385,85 @@ void lexer::Tokenize()//function that tokenizes your input stream
                 const char* str = str1.c_str();
                 if(strcmp(str,"markazi")==0)
                 {
-                    tokens.push_back(token(string(""), TokenType::MARKAZI));
+                    tokens.push_back(token(string(""), TokenType::MARKAZI));nooflines.push_back(2);
                 }
                 else if(strcmp(str,"kaam")==0)
                 {
-                    tokens.push_back(token(string(""), TokenType::KAAM));
+                    tokens.push_back(token(string(""), TokenType::KAAM));nooflines.push_back(2);
                 }
                
                 else if(strcmp(str,"karo")==0)
                 {
-                    tokens.push_back(token(string(""), TokenType::KARO));
+                    tokens.push_back(token(string(""), TokenType::KARO));nooflines.push_back(2);
                 }
                 else if(strcmp(str,"rakho")==0)
                 {
-                    tokens.push_back(token(string(""), TokenType::RAKHO));
+                    tokens.push_back(token(string(""), TokenType::RAKHO));nooflines.push_back(2);
                 }
                 else if(strcmp(str,"jab")==0)
                 {
-                    tokens.push_back(token(string(""), TokenType::JAB));
+                    tokens.push_back(token(string(""), TokenType::JAB));nooflines.push_back(2);
                 }
                 else if(strcmp(str,"tak")==0)
                 {
-                    tokens.push_back(token(string(""), TokenType::TAK));
+                    tokens.push_back(token(string(""), TokenType::TAK));nooflines.push_back(2);
                 }
                 else if(strcmp(str,"bas")==0)
                 {
-                    tokens.push_back(token(string(""), TokenType::BAS));
+                    tokens.push_back(token(string(""), TokenType::BAS));nooflines.push_back(2);
                 }
                 else if(strcmp(str,"agar")==0)
                 {
-                    tokens.push_back(token(string(""), TokenType::AGAR));
+                    tokens.push_back(token(string(""), TokenType::AGAR));nooflines.push_back(2);
                 }
                 else if(strcmp(str,"to")==0)
                 {
-                    tokens.push_back(token(string(""), TokenType::TO));
+                    tokens.push_back(token(string(""), TokenType::TO));nooflines.push_back(2);
                 }
                 else if(strcmp(str,"warna")==0)
                 {
-                    tokens.push_back(token(string(""), TokenType::WARNA));
+                    tokens.push_back(token(string(""), TokenType::WARNA));nooflines.push_back(2);
                 }
                 else if(strcmp(str,"phir")==0)
                 {
-                    tokens.push_back(token(string(""), TokenType::PHIR));
+                    tokens.push_back(token(string(""), TokenType::PHIR));nooflines.push_back(2);
                 }
                 else if(strcmp(str,"dekhao")==0)
                 {
-                    tokens.push_back(token(string(""), TokenType::DEKHAO));
+                    tokens.push_back(token(string(""), TokenType::DEKHAO));nooflines.push_back(2);
                 }
                 else if(strcmp(str,"lo")==0)
                 {
-                    tokens.push_back(token(string(""), TokenType::LO));
+                    tokens.push_back(token(string(""), TokenType::LO));nooflines.push_back(2);
                 }
                 else if(strcmp(str,"chalao")==0)
                 {
-                    tokens.push_back(token(string(""), TokenType::CHALAO));
+                    tokens.push_back(token(string(""), TokenType::CHALAO));nooflines.push_back(2);
                 }
                 else if(strcmp(str,"bhaijo")==0)
                 {
-                    tokens.push_back(token(string(""), TokenType::BHAIJO));
+                    tokens.push_back(token(string(""), TokenType::BHAIJO));nooflines.push_back(2);
                 }
                 else if(strcmp(str,"adad")==0)
                 {
-                    tokens.push_back(token(string(""), TokenType::ADAD));
+                    tokens.push_back(token(string(""), TokenType::ADAD));nooflines.push_back(2);
                 }
                 else if(strcmp(str,"khali")==0)
                 {
-                    tokens.push_back(token(string(""), TokenType::KHALI));
+                    tokens.push_back(token(string(""), TokenType::KHALI));nooflines.push_back(2);
                 }
                 else if(strcmp(str,"wapas")==0)
                 {
-                    tokens.push_back(token(string(""), TokenType::WAPAS));
+                    tokens.push_back(token(string(""), TokenType::WAPAS));nooflines.push_back(2);
                 }
                 else if(strcmp(str,"khatam")==0)
                 {
-                    tokens.push_back(token(string(""), TokenType::KHATAM));
+                    tokens.push_back(token(string(""), TokenType::KHATAM));nooflines.push_back(2);
                 }
                 else
                 {
                     string str2(toks.begin(),toks.end());
-                    tokens.push_back(token(string(str2), TokenType::ID));
+                    tokens.push_back(token(string(str2), TokenType::ID));nooflines.push_back(2);
                 }
 
                 toks.clear();
@@ -456,7 +486,7 @@ void lexer::Tokenize()//function that tokenizes your input stream
                 toks.push_back(stream[i]);
                 state=6;
                 //printVec(toks);
-                tokens.push_back(token(string("LE"), TokenType::RELOP));
+                tokens.push_back(token(string("<="), TokenType::RELOP));nooflines.push_back(2);
                 toks.clear();
             }
 
@@ -466,7 +496,7 @@ void lexer::Tokenize()//function that tokenizes your input stream
                 toks.push_back(stream[i]);
                 state=6;
                 //printVec(toks);
-                tokens.push_back(token(string("NE"), TokenType::RELOP));
+                tokens.push_back(token(string("!="), TokenType::RELOP));nooflines.push_back(2);
                 toks.clear();
             }
 
@@ -475,14 +505,14 @@ void lexer::Tokenize()//function that tokenizes your input stream
                 toks.push_back(stream[i]);
                 state=6;
                 //printVec(toks);
-                tokens.push_back(token(string("O"), TokenType::IO));
+                tokens.push_back(token(string("O"), TokenType::IO));nooflines.push_back(2);
                 toks.clear();
             }
 
             else{
                 state=3;
                 //printVec(toks);
-                tokens.push_back(token(string("LT"), TokenType::RELOP));
+                tokens.push_back(token(string("<"), TokenType::RELOP));nooflines.push_back(2);
                 toks.clear();
             }
             break;
@@ -495,7 +525,7 @@ void lexer::Tokenize()//function that tokenizes your input stream
                 toks.push_back(stream[i]);
                 state=6;
                 //printVec(toks);
-                tokens.push_back(token(string("GE"), TokenType::RELOP));
+                tokens.push_back(token(string(">="), TokenType::RELOP));nooflines.push_back(2);
                 toks.clear();
             }
             else if(char(stream[i])=='>')
@@ -503,14 +533,14 @@ void lexer::Tokenize()//function that tokenizes your input stream
                 toks.push_back(stream[i]);
                 state=6;
                 //printVec(toks);
-                tokens.push_back(token(string("I"), TokenType::IO));
+                tokens.push_back(token(string("I"), TokenType::IO));nooflines.push_back(2);
                 toks.clear();
             }
             else{
 
                 state=3;
                 //printVec(toks);
-                tokens.push_back(token(string("GT"), TokenType::RELOP));
+                tokens.push_back(token(string("GT"), TokenType::RELOP));nooflines.push_back(2);
                 toks.clear();
 
             }
@@ -528,7 +558,7 @@ void lexer::Tokenize()//function that tokenizes your input stream
             {
                 //printVec(toks);
                 string str(toks.begin(),toks.end());
-                tokens.push_back(token(string(str), TokenType::STRING));
+                tokens.push_back(token(string(str), TokenType::STRING));nooflines.push_back(2);
                 toks.clear();
                 //tokens.push_back(token(string(""), TokenType::BACKTICK));
                 //toks.clear();
@@ -543,13 +573,15 @@ void lexer::Tokenize()//function that tokenizes your input stream
             //COMMENTS 
             if(stream[i]!='\n')
             {
-                toks.push_back(stream[i]);
+                toks.push_back(stream[i]);nooflines.push_back(1);
                 state=9;
             }
             else if(stream[i]=='\n')
             {
                 string stri(toks.begin(),toks.end());
-                tokens.push_back(token(string(" "), TokenType::NL));
+               // if(tokens.back().tokenType!=TokenType::NL)
+                tokens.push_back(token(string(""), TokenType::NL));
+                nooflines.push_back(1);
                 toks.clear();
                 state = 6;
             }
@@ -559,15 +591,17 @@ void lexer::Tokenize()//function that tokenizes your input stream
             case 10:
             if(stream[i]=='\n')
             {
-                state=10;
+                tokens.push_back(token(string(""), TokenType::NL));
+                state=10;nooflines.push_back(1);
             }
             else if(stream[i]!='\n')
             {
                 //string stri(toks.begin(),toks.end());
                 // cout<<"Them = ";
                 // tokens.back().Print();
-                if(tokens.back().tokenType!=TokenType::NL)
-                tokens.push_back(token(string(""), TokenType::NL));
+                //if(tokens.back().tokenType!=TokenType::NL)
+                //tokens.push_back(token(string(""), TokenType::NL));
+                nooflines.push_back(1);
                 toks.clear();
                 state = 3;
             }
@@ -655,6 +689,7 @@ void lexer::printRaw()
         cout << *it;
     }
     cout << endl;
+
 }
 
 

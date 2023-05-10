@@ -7,6 +7,9 @@ class parser
     lexer _lexer;
     vector<token> symbols;
     vector<int> symbols_address;
+    vector<int> S_type;
+    vector<string> S_initial_value;
+    vector<int> S_id_type;
 
 public:
     int tabs = 0;
@@ -15,27 +18,28 @@ public:
     int functionCount =0;
     int globalVarCount =0;
     int statementCount = 0;
+    int IFCLICK = 0;
+
 
     void write_symbol_table();
     void print_tabs();
 
+    token tempVAR() {
+    static int count = 1;
+    std::string result = "t" + std::to_string(count);
+    count++;
+    token R(result,TokenType::TEMP);
+    return R;
+    }
 
     void syntax_error();
     token expect(TokenType expected_type);
     parser(const char filename[]);
     void readAndPrintAllInput();
     void resetPointer();
+    void write_TAC(string lexeme, bool nl);
+    void write_TAC_NS(string lexeme, bool nl);
 
-
-
-    // void Statement_List();
-    // void Decleration();
-    // void Variable_Decleration();
-    // void Funtion_Decleration();
-    // void VD_Specifier();
-
-/////////////////////////////////////////////
-/////////////////////////////////////////////
 
     int countLines(){ return _lexer.lineCount(_lexer.getCurrentPointer());}
     int countStatementsInBlock(int pos, int btype);
@@ -44,9 +48,11 @@ public:
     void DeclarationList();
     void Declaration();
     void VariableDeclaration();
-    void VariableAssignment();
+    token VariableAssignment();
     void FunctionDeclaration();
-    void VDSpecifier();
+
+    void VDSpecifier(token);
+
     void TypeF();
     void TypeID();
     void ParameterList();
@@ -55,33 +61,70 @@ public:
     void BlockF();
     void StatementList();
     void Statement();
-    token removeNL();
+    void removeNL();
 
 
-    //Statement → Expression | SelectionStatement |  IterativeStatement |  ReturnStatement | VariableDeclaration | FunctionCall | IOStatement | ^
-    void Expression();
+
+    void BlockIF();
+    void IFStatementList();
+    void IFStatement();
+
+
+    token Expression();
     void SelectionStatement();
     void IterativeStatement();
     void ReturnStatement();
-    void FunctionCall();
+    token FunctionCall();
     void IOStatement();
 
-
-   
-
-
-//////////////////////////////////////////////
-//////////////////////////////////////////////
+    
+    void ArgumentList();
+    void Argument();
 
 
+    void InputStatement();
+    void PrintStatement();
+    void InputSpecifier();
+    void InputVAR();
 
-    /*Terminal functions goes here use peek and expect*/
-    /*use TokenType:: for token names for example
-        expect(TokenType::ASSIGN);   //example function call
-      */
-	//all your parser function goes here
+    void PrintArg();
+    void PrintCont();
+    void InOutStatement();
 
-    void T();
+    void PrintVar();
+    void PrintTer();
+    void PS1();
+    void IS1();
+
+
+
+    void WarnaStatement();
+    void PhirStatement();
+
+
+
+    token ComparisonExpression();
+    token ASExpression(token);
+    token MDExpression(token);
+    token Terminal();
+    void RELOPExpression(token);
+    token E();
+
+
+    void ADDTOTABLE(token t, int type, int id_type){
+        symbols.push_back(t);
+        symbols_address.push_back(addr);
+        S_id_type.push_back(id_type);
+        if(type==1){S_type.push_back(1); addr = addr + 4;}
+        else {S_type.push_back(0);addr=addr+4;}
+    }
+
+    void ADD_Initial_Value(string initial_value){
+         S_initial_value.push_back(initial_value);
+    }
+
+
+    token TT();
     void T_();
     void F();
 };

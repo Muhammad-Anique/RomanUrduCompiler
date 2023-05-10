@@ -1,0 +1,39 @@
+a = 99 
+b = 99 
+calculateFib : 
+x = 0 
+y = 0 
+if ( n < 0 ) goto 8 
+goto 11
+out "munfi number daal diya\n" 
+ret 0 
+goto 30
+if ( n = 0 ) goto 13
+goto 16
+out "yar 0 hai!\n" 
+ret 0 
+goto 30
+out "\nfibonacci series: " 
+i = 1 
+t1 = i - 1 
+if ( t1 >= n ) goto 21
+goto 30
+out x 
+out " " 
+t2 = x + y 
+z = t2 
+x = y 
+y = z 
+t3 = i + 1 
+i = t3 
+goto 18 
+ret 0 
+markazi : 
+out "Enter the number" 
+in num 
+param num 
+param 0 
+call calculateFib 2 , t4 
+result = t4 
+ret 0 
+HALT 

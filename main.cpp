@@ -3,6 +3,8 @@
 #include "parser.cpp"
 #include "lexer.cpp"
 #include "lexer.h"
+#include "VM.h"
+#include "VM.cpp"
 using namespace std;
 
 int main(int argc, char* argv[])
@@ -10,7 +12,12 @@ int main(int argc, char* argv[])
 	//asking for file name as command line arguments
 	if (argc == 2)
 	{
-		parser _parser(argv[1]);
+
+		//uncomment this line of parse
+		//parser _parser(argv[1]);
+		
+		
+		
 		// lexer _lexer(argv[1]);
 		// token t;
 		// t = _lexer.getNextToken();
@@ -20,6 +27,13 @@ int main(int argc, char* argv[])
 		// 	t.Print();
 		// 	t = _lexer.getNextToken();
 		// }
+
+
+		VM vm;
+		vm.start();
+
+		// OpCode op;
+		// op.load_code_in_stream("Tac.txt");
 	}
 	else if (argc > 2)
 	{ //argument limit exceeds
