@@ -69,7 +69,7 @@ string OpCode::removeBrackets(string str) {
 }
 
 
-void OpCode::load_code_in_stream(const char* filename){
+void OpCode::load_code_in_stream(const char filename[]){
     ifstream file;
     file.open(filename);
     if(file.is_open()){

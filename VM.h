@@ -31,6 +31,7 @@ enum class OperationCode {
     RET=17,
     PARAM=18,
     CALL=19,
+    MUL =20,
 
 };
 
@@ -41,32 +42,34 @@ class Symbol_Table{
     vector<int> initial_value;
     vector<string> context;
     vector<string> type;
-    void add_Entry(string symbol, int size, int i_value){
+    void add_Entry(string symbol, int size, int i_value, string context_, string type_){
         symbols.push_back(symbol);
         addr.push_back(size);
         initial_value.push_back(i_value);
+        context.push_back(context_);
+        type.push_back(type_);
     }
 
     void Print_Symbol_Table(){
         cout<<"----------------------------------------"<<endl;
-        cout<<"IV       ADR     SYM"<<endl;
+        cout<<"IV       ADR       CNTXT       TYPE      SYM"<<endl;
         for(int i=0;i<symbols.size();i++){
-            cout<<initial_value[i]<<"        "<<addr[i]<<"        "<<symbols[i]<<endl;
+            cout<<initial_value[i]<<"        "<<addr[i]<<"        "<<context[i]<<"          "<<type[i]<<"         "<<symbols[i]<<"             "<<endl;
            
         }
         cout<<"----------------------------------------"<<endl;
     }
 
 
-    void Print_Symbol_Table(vector<string> cntxt){
-        cout<<"----------------------------------------"<<endl;
-        cout<<"IV       ADR     CTX      SYM"<<endl;
-        for(int i=0;i<symbols.size();i++){
-            cout<<initial_value[i]<<"        "<<addr[i]<<"       "<<cntxt[i]<<"        "<<symbols[i]<<endl;
+    // void Print_Symbol_Table(vector<string> cntxt){
+    //     cout<<"----------------------------------------"<<endl;
+    //     cout<<"IV       ADR     CTX      SYM"<<endl;
+    //     for(int i=0;i<symbols.size();i++){
+    //         cout<<initial_value[i]<<"        "<<addr[i]<<"       "<<cntxt[i]<<"        "<<symbols[i]<<endl;
            
-        }
-        cout<<"----------------------------------------"<<endl;
-    }
+    //     }
+    //     cout<<"----------------------------------------"<<endl;
+    // }
 
     vector<string> lookup_table(string var,vector<string> cntxt ){
 
@@ -120,7 +123,7 @@ class DataSegment{
 
     void Print_Data_Segment(){
         for(int i=0;i<addresses.size();i++){
-            cout<<i+seed<<"      "<<addresses[i]<<"       -->"<<variables[i]<<endl;
+            cout<<i+seed<<"          ~"<<i<<"             "<<addresses[i]<<"       -->"<<variables[i]<<endl;
         }
     }
 
@@ -151,11 +154,27 @@ class StackSegment{
     string function_name;
 
     void Print_Stack_Segment(){
+        cout<<"-------------Stack Segment-----------------"<<endl;
         cout<<"Params = "<<num_of_params<<endl;
         cout<<"Return Line = "<<return_line<<endl;
         cout<<"Function Name = "<<function_name<<endl;
-        cout<<"Return_Value"
+        cout<<"Return_Value = "<<return_value<<endl;
+        for(int i=0;i<Stack.size();i++){
+            if(i<num_of_params)
+            cout<<"Parameter"<<i+1<<" = "<<Stack[i]<<endl;
+            if(i>=num_of_params)
+            cout<<"Output Variable Address = "<<Stack[i]<<endl;
+        }
+         cout<<"---------------------------------------"<<endl;
 
+    }
+
+    void clear_Segement(){
+        Stack.clear();
+        num_of_params=0;
+        return_value=0;
+        function_name.clear();
+        return_line=0;
     }
 };
 
@@ -170,19 +189,23 @@ class VM{
     //        1[  ]
     //DS 2    0[  ]
     //        1[  ]
-
     vector<StackSegment> SS;
     vector<QuadCode> CS;    // Basically a 2D  but implemented using a Structur
     Symbol_Table global_ST;
     vector<string> global_ST_Context;
     vector<Symbol_Table> local_ST;
+    const char* filename;
     public:
     OpCode _opCode;
     vector<QuadCode> quad; 
 
+    VM(const char filename[]){
+      start(filename);
+    }
+
     //CODE COMPILATION
-    void start();
-    void initialize_OpCode_and_CodeSegment();
+    void start(const char filename[]);
+    void initialize_OpCode_and_CodeSegment(const char filename[]);
     void initialize_symbol_tables();
     void initialize_data_segmant();
     bool lookup_global_symbol_table(string var);
@@ -195,6 +218,7 @@ class VM{
     int get_ind(string op);
     int get_ds_2(string op);
     int updatePC(string label);
+    void functionCall(int,string);
 
     //CODE EXECUTION
     void Executer_VM();

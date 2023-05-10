@@ -125,7 +125,7 @@ class OpCode{
     vector<OpTokens> _opTokens;
     vector<string> lines;
     vector<QuadCode> _quadCode;
-    void load_code_in_stream(const char* filename);
+    void load_code_in_stream(const char filename[]);
     void convert_code_into_tokens();
     void clean_the_code();
     void Print_the_lines();

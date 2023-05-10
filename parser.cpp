@@ -167,10 +167,12 @@ void parser::write_symbol_table(){
 
            myfile<<'\t'<<'\t'<<'\t';
 
-            if(S_id_type[i]==0)
+           if(S_id_type[i]==0)
            myfile<<"func";
-           else
+           else if(S_id_type[i]==1)
            myfile<<"var ";
+           else if(S_id_type[i]==2)
+           myfile<<"param";
 
            myfile<<'\t'<<'\t'<<'\t';
 
@@ -547,7 +549,7 @@ void parser::Parameter(){
     if (_lexer.peek(1).tokenType == TokenType::ID)
     {
         expect(TokenType::ID);
-        ADDTOTABLE(_lexer.getCurrentToken(_lexer.getCurrentPointer()),1,1);
+        ADDTOTABLE(_lexer.getCurrentToken(_lexer.getCurrentPointer()),1,2);
         ADD_Initial_Value("0");
         expect(TokenType::AT);
         TypeID();
@@ -605,11 +607,11 @@ void parser::FunctionDeclaration(){
     {
        addr=0;
        expect(TokenType::KAAM);
-       write_TAC(_lexer.peek(1).lexeme,0);
-       write_TAC(":",1);
+    //    write_TAC(_lexer.peek(1).lexeme,0);
+    //    write_TAC(":",1);
        expect(TokenType::ID);
        if (_lexer.peek(2).tokenType == TokenType::ADAD){
-        ADD_Initial_Value("0");
+        ADD_Initial_Value(to_string(n_line));
         ADDTOTABLE(_lexer.getCurrentToken(_lexer.getCurrentPointer()),1,0); 
         }
         else{
@@ -629,10 +631,10 @@ void parser::FunctionDeclaration(){
        addr=0;
        expect(TokenType::KAAM);
        expect(TokenType::MARKAZI);
-       write_TAC("markazi",0);
-       write_TAC(":",1);
+    //    write_TAC("markazi",0);
+    //    write_TAC(":",1);
        ADDTOTABLE(_lexer.getCurrentToken(_lexer.getCurrentPointer()),0,0);
-       ADD_Initial_Value("0");
+       ADD_Initial_Value(to_string(n_line));
        expect(TokenType::AT);
        TypeF(); 
        expect(TokenType::LPAREN);
